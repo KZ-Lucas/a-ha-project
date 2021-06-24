@@ -1,17 +1,21 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../modules';
-import * as experts from '../modules/experts';
-import { useRouter } from 'next/router';
+import { RootState } from '@store/modules';
+import * as experts from '@store/modules/experts';
 
-export const useExperts = () => {
+const useExperts = () => {
   const payload = useSelector((state: RootState) => state.experts);
+
   const dispatch = useDispatch();
 
-  const changePayload = useCallback((payload: any) => dispatch(experts.changePayload(payload)), [dispatch]);
+  const changePayload = useCallback((payload: any) => {
+    return dispatch(experts.changePayload({ page: 1, ...payload }))
+  }, [dispatch]);
   
   return {
     payload,
     changePayload
   };
 };
+
+export default useExperts;

@@ -1,31 +1,28 @@
 import { forwardRef, RefObject } from 'react';
 import styled from 'styled-components';
-import { Swiper, SwiperSlide } from "swiper/react";
-import SwiperCore, {
-  Navigation
-} from 'swiper/core';
-import useSwiperRef from '../hooks/useSwiperRef';
-import type { Categories } from '../type/experts';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import SwiperCore, { Navigation } from 'swiper/core';
+import { useSwiperRef } from '@hooks';
+import type { expertsType } from '@Ptypes';
+import { color } from '@constants';
+import { ArrowIcon } from '@components/common/icons';
 
 SwiperCore.use([Navigation]);
 
 type SwiperNavBtnType = {
-  Btype: string;
+  direction: string;
 };
 type Props = {
-  cateList: Categories[];
+  cateList: expertsType.Categories[];
   onClick: (id: string) => void;
   selectedItem: string;
 };
 
-// TODO: svg global style로 분기
 const SwiperNavBtn = forwardRef<HTMLButtonElement, SwiperNavBtnType>(
   function callback (props, ref) {
     return (
       <Button ref={ref} {...props}>
-        <PrevSvg fill="none" viewBox="0 0 13 23">
-          <path d="M3.47 11.5l9.043 9.04c.56.56.56 1.48 0 2.04-.562.56-1.471.56-2.033 0L.421 12.52a1.447 1.447 0 010-2.04L10.481.42a1.438 1.438 0 012.032 0c.56.56.56 1.48 0 2.04L3.469 11.5z" fill="currentColor" />
-        </PrevSvg>
+        <ArrowIcon {...props} />
       </Button>
     );
   }
@@ -37,8 +34,8 @@ const CateSwiper: React.FunctionComponent<Props> = ({ cateList, onClick, selecte
 
   return (
     <SwiperWrapper>
-      <SwiperNavBtn ref={prevElRef as RefObject<HTMLButtonElement>} Btype='prev' />
-      <Swiper slidesPerView="auto" navigation={{ prevEl: prevEl as HTMLButtonElement, nextEl: nextEl as HTMLButtonElement }}>
+      <SwiperNavBtn ref={prevElRef as RefObject<HTMLButtonElement>} direction={'left'} />
+      <Swiper slidesPerView={'auto'} navigation={{ prevEl: prevEl as HTMLButtonElement, nextEl: nextEl as HTMLButtonElement }}>
         {
           cateList.map(el => (
             <SwiperSlide key={el.id} onClick={() => onClick(el.id.toString())}>
@@ -49,7 +46,7 @@ const CateSwiper: React.FunctionComponent<Props> = ({ cateList, onClick, selecte
           ))
         }
       </Swiper>
-        <SwiperNavBtn ref={nextElRef as RefObject<HTMLButtonElement>} Btype='next' />
+        <SwiperNavBtn ref={nextElRef as RefObject<HTMLButtonElement>} direction={'right'} />
     </SwiperWrapper>
   );
 };
@@ -59,7 +56,7 @@ export default CateSwiper;
 const SwiperWrapper = styled.div`
   overflow: hidden;
   display: flex;
-  border-bottom: 1px solid #333333;
+  border-bottom: 1px solid ${color.pastel.darkGray};
   margin: 0 0 25px;
 
   .swiper-container {
@@ -71,41 +68,35 @@ const SwiperWrapper = styled.div`
   .swiper-slide {
     display: flex;
     flex-shrink: 0;
-    color: #888888;
+    color: ${color.basic.gray};
     margin-right: 32px;
     width: auto;
   }
 `;
 
-const PrevSvg = styled.svg`
-  width: 1em;
-  height: 1em;
-`;
-
 const Button = styled.button<SwiperNavBtnType>`
   background-color: transparent;
   cursor: pointer;
-  color: white;
+  color: ${color.basic.white};
   border: 0;
-  ${attr => attr.Btype === 'next' ? 'transform: rotate(180deg);' : ''}
-  margin-${attr => attr.Btype === 'next' ? 'left' : 'right'}: 5px;
+  margin-${attr => attr.direction === 'right' ? 'left' : 'right'}: 5px;
 `;
 
 const SwiperText = styled.a`
   cursor: pointer;
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
+  padding-left: .25rem;
+  padding-right: .25rem;
   padding-top: 1rem;
-  padding-bottom: 0.75rem;
+  padding-bottom: .75rem;
 
   &.selected {
-    border-bottom: 4px solid #1fc7c1;
-    color: white;
+    border-bottom: 4px solid ${color.pastel.skyBlue};
+    color: ${color.basic.white};
     font-weight: 500;
   }
 
   &:hover {
-    color: white;
+    color: ${color.basic.white};
     font-weight: 500;
   }
 `;

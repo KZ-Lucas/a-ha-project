@@ -16,11 +16,6 @@ export type getCategoriesResponse = {
   children: Array<Categories>;
 } & Categories;
 
-type consultingArea = {
-  id: number;
-  title: string;
-};
-
 type ProfileFile = {
   fileSize: string;
   fileUrl: string;
@@ -31,9 +26,16 @@ export type getExpertsResponse = {
   experts: Array<{
     consultingAreas: Array<{
       children: Array<{
-        children: Array<consultingArea>;
-      }> & consultingArea
-    }> & consultingArea;
+        children: Array<{
+          id: number;
+          title: string;
+        }>;
+        id: number;
+        title: string;
+      }>;
+      id: number;
+      title: string;
+    }>;
     createAt: string;
     deletedAt: string | null;
     fastestAvailable: {

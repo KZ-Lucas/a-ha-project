@@ -1,11 +1,10 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import rootReducer from '../src/modules';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import confiureStore from '@store';
 
-const store = createStore(rootReducer, composeWithDevTools());
+// Redux store
+const store = confiureStore();
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

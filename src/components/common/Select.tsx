@@ -1,16 +1,21 @@
 import styled from 'styled-components';
+import { color } from '@constants';
 
 type Props = {
   optionList: Array<{ key: string; label: string; }>;
+  onClick: (value: string) => void;
 };
 
-const Select: React.FunctionComponent<Props> = ({ optionList }) => {
-  console.log(2);
+const Select: React.FunctionComponent<Props> = ({ optionList, onClick }) => {
+  const selectFilter = (event: { target: HTMLSelectElement }) => {
+    onClick(event.target.value);
+  };
+  
   return (
-    <SelectStyled onChange={(e) => console.log(e)}>
+    <SelectStyled onChange={selectFilter}>
       {
-        optionList.map((option, index) => (
-          <OptionStyled key={index} value={option.key}>
+        optionList.map((option) => (
+          <OptionStyled key={option.key} value={option.key}>
             {option.label}
           </OptionStyled>
         ))
@@ -22,11 +27,11 @@ const Select: React.FunctionComponent<Props> = ({ optionList }) => {
 export default Select;
 
 const SelectStyled = styled.select`
-  font-size: 0.875rem;
+  font-size: .875rem;
   text-align-last: center;
   text-align: center;
   background-color: transparent;
-  color: white;
+  color: ${color.pastel.white};
   border: 0;
   cursor: pointer;
 
@@ -36,5 +41,5 @@ const SelectStyled = styled.select`
 `;
 
 const OptionStyled = styled.option`
-  color: black;
+  color: ${color.pastel.black};
 `;

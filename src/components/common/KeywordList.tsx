@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { color } from '@constants';
 
 type Props = {
   keywords: Array<{
@@ -7,9 +8,13 @@ type Props = {
   }>;
   onClick?: (keywords: Array<number>) => void;
   selectedItem: Array<number>;
+  activeStyle?: string;
+};
+type KeywordStyle = {
+  activeStyle?: string;
 };
 
-const KeywordList: React.FunctionComponent<Props> = ({ keywords, onClick, selectedItem }) => {
+const KeywordList: React.FunctionComponent<Props> = ({ keywords, onClick, selectedItem, activeStyle }) => {
   const selectKeyword = (id: number) => {
     if (!onClick) { return; }
     if (selectedItem.includes(id)) {
@@ -23,7 +28,7 @@ const KeywordList: React.FunctionComponent<Props> = ({ keywords, onClick, select
     <KeywordWrapper>
       {
         keywords.map(el => (
-          <Keyword key={el.id} className={selectedItem.includes(el.id) ? 'selected' : ''} onClick={() => selectKeyword(el.id)}>
+          <Keyword key={el.id} className={selectedItem.includes(el.id) ? 'selected' : ''} onClick={() => selectKeyword(el.id)} activeStyle={activeStyle}>
             <KeywordText>
               {el.title}
             </KeywordText>
@@ -45,22 +50,26 @@ const KeywordWrapper = styled.div`
   button + button {
     margin-left: .6rem;
   }
-  
 `;
-const Keyword = styled.button`
+const Keyword = styled.button<KeywordStyle>`
   background-color: transparent;
-  border: 1px solid #888888;
+  border: 1px solid ${color.basic.gray};
   border-radius: 9999px;
   width: auto;
   cursor: pointer;
   margin-bottom: .3rem;
 
   &.selected {
-    background-color: #1fc7c1;
-    border-color: #1fc7c1;
-
-    span {
-      color: #111111;
+    ${attr => attr.activeStyle ?
+      attr.activeStyle :
+      `
+        background-color: ${color.pastel.skyBlue};
+        border-color: ${color.pastel.skyBlue};
+  
+        span {
+          color: ${color.pastel.black};
+        }
+      `
     }
   }
 `;
@@ -71,7 +80,7 @@ const KeywordText = styled.span`
   padding: 0 .5rem;
   line-height: 1;
   height: 30px;
-  color: #888888;
+  color: ${color.basic.gray};
 `;
 
 export default KeywordList;

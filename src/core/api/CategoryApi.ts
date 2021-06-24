@@ -1,5 +1,5 @@
-import { createRequest } from '../service/ApiService';
-import { getCategoriesResponse, getExpertsResponse } from '../../type/experts';
+import { createRequest } from '@service/ApiService';
+import { getCategoriesResponse, getExpertsResponse } from '@Ptypes/experts';
 
 const request = createRequest();
 

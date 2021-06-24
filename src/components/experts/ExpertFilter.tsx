@@ -1,33 +1,32 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import ToggleSwitch from './ToggleSwitch';
-import { useExperts } from '../hooks/useExperts';
-import Select from './Select';
+import { ToggleSwitch, Select } from '@components/common';
+import { useExperts } from '@hooks';
+import { color, experts } from '@constants';
 
-const ExpertsFilter = () => {
+const ExpertsFilter: React.FunctionComponent = () => {
   const [available, setAvailable] = useState(false);
   const { changePayload } = useExperts();
-  const switchClick = (toggle: boolean) => {
+  const switchChange = (toggle: boolean) => {
     setAvailable(toggle);
     changePayload({
       isAvailable: toggle
     });
   };
-  // TODO: constant
-  const filterItems = [
-    { label: '평점 높은 순', key: 'rates' },
-    { label: '후기 많은 순', key: 'reviews' },
-    { label: '상담진행 많은 순' key: 'sessions' }
-  ];
+  const filterChange = (value: string) => {
+    changePayload({
+      sortBy: value
+    });
+  };
 
   return (
     <ExpertsFilterWrapper>
       <ToggleSwitchWrapper>
         <FilterLabel>지금 상담 가능</FilterLabel>
-        <ToggleSwitch isToggle={available} onClick={switchClick} />
+        <ToggleSwitch isToggle={available} onClick={switchChange} />
       </ToggleSwitchWrapper>
       <SortExpertsWrapper>
-        <Select optionList={filterItems} />
+        <Select optionList={experts.filterItems} onClick = {filterChange}/>
       </SortExpertsWrapper>
     </ExpertsFilterWrapper>
   )
@@ -50,6 +49,6 @@ const SortExpertsWrapper = styled.div`
 `;
 
 const FilterLabel = styled.span`
-  font-size: 0.875rem;
-  color: white;
+  font-size: .875rem;
+  color: ${color.basic.white};
 `;

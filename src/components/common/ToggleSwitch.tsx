@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { color } from '@src/constants';
 
 type SwitchType = {
   toggle: number;
@@ -24,19 +25,19 @@ const ToggleSwitch: React.FunctionComponent<Props> = ({ onClick, isToggle }) => 
 
 export default ToggleSwitch;
 
-// TODO: 0.25 .25 COMMON
+//TODO 3 -> 20
 const ToggleSwitchWrapper = styled.div<SwitchType>`
   position: relative;
-  background-color: #bbbbbb;
+  background-color: ${color.pastel.white};
   display: inline-block;
   vertical-align: middle;
   width: 26.6px;
   height: 14.9px;
   padding: 2px;
   border-radius: 10px;
-  margin-left: 0.25rem;
+  margin-left: .25rem;
   cursor: pointer;
-  background-color: ${attr => attr.toggle ? '#1fc7c1' : '#bbbbbb'};
+  background-color: ${attr => attr.toggle ? color.pastel.skyBlue : color.pastel.lightGray};
 
   div {
     left: ${attr => attr.toggle ? '12px' : '2px'}  
@@ -45,7 +46,7 @@ const ToggleSwitchWrapper = styled.div<SwitchType>`
 
 const SwitchCircle = styled.div`
   position: absolute;
-  background-color: #f0f0f0;
+  background-color: ${color.pastel.white};
   border-radius: 9999px;
   top: 2px;
   width: 11px;

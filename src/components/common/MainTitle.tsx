@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { color } from '@constants';
 
 type Props = {
   title: string;
@@ -16,20 +17,19 @@ export default MainTitle;
 
 const MainTitleStyled = styled.span`
   position: relative;
-  color: #f0f0f0;
+  color: ${color.pastel.white};
   font-weight: 700;
   font-size: 32px;
 
   &:after {
     border-radius: 9999px;
     --bg-opacity: 1;
-    background-color: #1fc7c1;
-    background-color: rgba(31,199,193,var(--bg-opacity));
+    background-color: ${color.pastel.skyBlue};
     position: absolute;
-    margin-left: 0.25rem;
+    margin-left: .25rem;
     content: '';
-    width: 0.2em;
-    height: 0.2em;
-    bottom: 0.2rem
+    width: .2em;
+    height: .2em;
+    bottom: .2rem
   }
 `;
