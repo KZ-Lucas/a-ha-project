@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { color } from '@constants';
+import { PlusIcon } from '../common/icons';
 
 type Props = {
   /** 더보기 클릭 이벤트 핸들러 */
@@ -7,7 +8,12 @@ type Props = {
 };
 
 const SeeMore: React.FunctionComponent<Props> = ({ onClick }) => (
-  <SeeMoreWrapper onClick={onClick}>더보기</SeeMoreWrapper>
+  <SeeMoreWrapper onClick={onClick}>
+    더보기
+    <IconWrapper>
+      <PlusIcon width={'.8rem'} height={'.8rem'} />
+    </IconWrapper>
+  </SeeMoreWrapper>
 );
 
 export default SeeMore;
@@ -22,4 +28,8 @@ const SeeMoreWrapper = styled.div`
   margin-bottom: 1rem;
   cursor: pointer;
   color: ${color.basic.white};
+`;
+
+const IconWrapper = styled.div`
+  margin-left: .6rem;
 `;
