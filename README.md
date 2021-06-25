@@ -1,34 +1,51 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 아하 사전 과제
 
-## Getting Started
+본 프로젝트는 아하 프론트엔드 개발 직무 면접에 앞서 사전 과제를 진행하기 위해 개발되었습니다.
 
-First, run the development server:
+## 실행 환경
+
+본 프로젝트는 다음과 같은 프레임워크 혹은 라이브러리 환경에서 실행됩니다.
+
+- [Nextjs] - SSR 및 기존 React를 제한하는 구조를 사용하기 위해 채용함
+- [Typescript] - 문법을 제한함으로써 유지보수성을 높이기 위해 채용함
+- [Styled-components] - 태그를 컴포넌트 처럼 사용해 각 태그를 좀더 시맨틱하게 사용하기 위해 채용함
+- [Redux] - 기타 환경을 저장해 Experts 리스팅을 하기 위해 채용함
+
+## 시작하기
+
+개발 서버를 시작하기 위해서는 다음과 같은 Flow로 진행합니다:
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+프로젝트 패키지를 빌드 후 운영 서버로 시작하기 위해서는 다음과 같은 Flow로 진행합니다:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+# 이후
+npm run start
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.tsx`.
+브라우저를 열으신 뒤 [http://localhost:3001](http://localhost:3001) 으로 접속해 결과물을 확인할 수 있습니다.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## 여기부터는 프로젝트를 진행하면서 여러가지 연구를 진행했던 부분을 기술합니다.
+현재 개발된 웹어플리케이션은 다음 FLOW 발생 시 [AS-IS] 와 같이 리렌더링되고 있습니다.
+본 방식과 다른 방식의 비교를 위해 타 방식을 [TO-BE] 항목을 통해 동일하게 정리하겠습니다.
 
-## Learn More
+[FLOW]
+지금 상담 가능 필터링 기능 이용 시
 
-To learn more about Next.js, take a look at the following resources:
+[AS-IS]
+1. 지금 상담 가능 필터링에 해당하는 페이로드 프로퍼티 (isAvailable)를 페이로드가 담긴 스토어에 머지하는 dispatch 작업을 수행합니다. (누적 렌더링 1회)
+2. 리렌더링이 발생하게되면서 페이지 단에서 변경된 페이로드를 useEffect를 통해 확인해 Experts를 상태로 추가하는 setState 작업을 수행합니다. (누적 렌더링 2회)
+3. 변경된 state를 통해 렌더링을 처리합니다.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+[TO-BE]
+1. 지금 상담 가능 필터링에 해당하는 페이로드 프로퍼티를 포함한 모든 페이로드 통해 Experts API를 호출해 스토어에 들이붓는 dispatch 작업을 수행합니다. (누적 렌더링 1회)
+2. 변경된 스토어의 Experts 데이터를 통해 렌더링을 처리합니다.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+위 안건은 다음 PR을 통해 처리 진행하였습니다.
+https://github.com/KZ-Lucas/a-ha-project/pull/1
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+감사합니다.
