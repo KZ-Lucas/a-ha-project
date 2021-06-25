@@ -4,7 +4,7 @@ import { expertsReducer } from '@store/modules/experts';
 
 // Reducer Root Combine
 export const rootReducer = combineReducers({
-  experts: expertsReducer
+  experts: expertsReducer,
 });
 
 // Reducer Root State type

@@ -1,74 +1,82 @@
 import { useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@store/modules';
-import { queryMapping } from '@constants/experts';
-import { CategoryApi } from '@src/core/api';
 import { useRouter } from 'next/router';
-import { CommonUtil } from '@src/core/util';
-import * as expertsModules from '@store/modules/experts'
+import { RootState } from '@store/modules';
+import { CategoryApi } from '@src/core/api';
+import * as expertsModules from '@store/modules/experts';
+import { defaultCount } from '@constants/experts';
+import { GetExpertPayload } from '@Ptypes/experts';
 
 const useExperts = () => {
-  const experts = useSelector((state: RootState) => state.experts);
   const router = useRouter();
+  const { rootId, subId, keywords, isAvailable, sortBy } = router.query;
+  const experts = useSelector((state: RootState) => state.experts);
   const dispatch = useDispatch();
-  const ref = useRef(1);
-
-  // 개선 ㅋㅋ
-  const lastDrpKey = Object.keys(CommonUtil.ObjPick(router.query, ['keywords', 'mCate', 'section'])[0])[0];
-  const lastDrpValue = Object.values(CommonUtil.ObjPick(router.query, ['keywords', 'mCate', 'section'])[0])[0];
+  const page = useRef(1);
 
   const getPayload = useCallback(() => {
-    const originPayload = {
-      count: 3,
-      page: ref.current,
-      [queryMapping[lastDrpKey]]: lastDrpValue
+    const availablePayload: Record<string, any> = keywords
+      ? { keywords }
+      : subId
+      ? { subId }
+      : rootId
+      ? { rootId }
+      : {};
+
+    const originPayload: GetExpertPayload & { keywords?: Array<string> } = {
+      count: defaultCount,
+      page: page.current,
+      ...availablePayload,
     };
 
-    if (router.query.isAvailable) {
-      originPayload.isAvailable = router.query.isAvailable;
+    if (isAvailable) {
+      originPayload.isAvailable = isAvailable as string;
     }
 
-    if (router.query.sortBy) {
-      originPayload.sortBy = router.query.sortBy;
+    if (sortBy) {
+      originPayload.sortBy = sortBy as string;
     }
-  
-    if (lastDrpKey === 'keywords') {
-      const leafIdArr = JSON.parse(decodeURIComponent(lastDrpValue));
 
-      originPayload.leafIds = leafIdArr;
-      delete originPayload.leafId;
+    if (Object.keys(availablePayload)[0] === 'keywords') {
+      originPayload.leafIds = JSON.parse(
+        decodeURIComponent(Object.values(availablePayload)[0])
+      );
+
+      delete originPayload.keywords;
     }
 
     return originPayload;
-  }, [lastDrpKey, lastDrpValue, router.query.isAvailable, router.query.sortBy]);
+  }, [isAvailable, sortBy, keywords, subId, rootId]);
 
-  const fetchExperts = useCallback((payload: any) => {
-      ref.current = 1;
-    // get dynamic route params
-    CategoryApi.getExperts({ ...getPayload(), ...payload }).then((res) => {
-      try {
-       dispatch(expertsModules.fetchExperts(res.data));
-      } catch (err) {
-        throw Error(err);
-      }
-    })
-  }, [dispatch, getPayload]);
+  const fetchExperts = useCallback(
+    (payload: Partial<GetExpertPayload> = {}) => {
+      page.current = 1;
+      CategoryApi.getExperts({ ...getPayload(), ...payload }).then((res) => {
+        try {
+          dispatch(expertsModules.fetchExperts(res.data));
+        } catch (err) {
+          throw Error(err);
+        }
+      });
+    },
+    [dispatch, getPayload]
+  );
 
   const moreExperts = useCallback(() => {
-    ref.current++;
-    CategoryApi.getExperts({ ...getPayload()}).then((res) =>{
+    page.current++;
+    CategoryApi.getExperts({ ...getPayload() }).then((res) => {
       try {
-       dispatch(expertsModules.moreExperts(res.data));
+        dispatch(expertsModules.moreExperts(res.data));
       } catch (err) {
         throw Error(err);
       }
-    })
-  }, [dispatch, getPayload])
-  
+    });
+  }, [dispatch, getPayload]);
+
   return {
     experts,
     fetchExperts,
-    moreExperts
+    moreExperts,
   };
 };
 

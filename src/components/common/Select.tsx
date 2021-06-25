@@ -2,26 +2,28 @@ import styled from 'styled-components';
 import { color } from '@constants';
 
 type Props = {
-  optionList: Array<{ key: string; label: string; }>;
+  /** 표시할 옵션 리스트 */
+  optionList: Array<{ key: string; label: string }>;
+  /** 옵션 선택 이벤트 핸들러 */
   onClick: (value: string) => void;
+  /** 옵션 기본 선택값 */
   defaultValue: string;
 };
 
-const Select: React.FunctionComponent<Props> = ({ optionList, onClick, defaultValue }) => {
-  const selectFilter = (event: { target: HTMLSelectElement }) => {
-    onClick(event.target.value);
-  };
-  console.log(defaultValue);
-  
+const Select: React.FunctionComponent<Props> = ({
+  optionList,
+  onClick,
+  defaultValue,
+}) => {
+  const selectFilter = (event: { target: HTMLSelectElement }) => onClick(event.target.value);
+
   return (
     <SelectStyled onChange={selectFilter} defaultValue={defaultValue}>
-      {
-        optionList.map((option) => (
-          <OptionStyled key={option.key} value={option.key}>
-            {option.label}
-          </OptionStyled>
-        ))
-      }
+      {optionList.map((option) => (
+        <OptionStyled key={option.key} value={option.key}>
+          {option.label}
+        </OptionStyled>
+      ))}
     </SelectStyled>
   );
 };
@@ -31,7 +33,6 @@ export default Select;
 const SelectStyled = styled.select`
   font-size: .875rem;
   text-align-last: center;
-  text-align: center;
   background-color: transparent;
   color: ${color.pastel.white};
   border: 0;
@@ -41,7 +42,6 @@ const SelectStyled = styled.select`
     outline: 0;
   }
 `;
-
 const OptionStyled = styled.option`
   color: ${color.pastel.black};
 `;

@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { ApiUtil } from '@util';
+import { apiBaseUrl, responseTimeout } from '@constants/common';
 
-// TODO: constants로 분리
 axios.defaults.headers.post['Content-Type'] = 'application/json';
-axios.defaults.baseURL = 'http://interview-test-api.a-ha.kr';
-axios.defaults.timeout = 120000;
+axios.defaults.baseURL = apiBaseUrl;
+axios.defaults.timeout = responseTimeout;
 
 export function createRequest() {
   return function request<R>(url: string, params: Record<string, any> = {}) {

@@ -13,13 +13,16 @@ type SwiperNavBtnType = {
   direction: string;
 };
 type Props = {
+  /** 리스트 대상 카테고리 */
   cateList: expertsType.Categories[];
+  /** 카테고리 클릭 이벤트 핸들러 */
   onClick: (id: string) => void;
+  /** 현재 지정 카테고리 */
   selectedItem: string;
 };
 
 const SwiperNavBtn = forwardRef<HTMLButtonElement, SwiperNavBtnType>(
-  function callback (props, ref) {
+  function callback(props, ref) {
     return (
       <Button ref={ref} {...props}>
         <ArrowIcon {...props} />
@@ -28,25 +31,39 @@ const SwiperNavBtn = forwardRef<HTMLButtonElement, SwiperNavBtnType>(
   }
 );
 
-const CateSwiper: React.FunctionComponent<Props> = ({ cateList, onClick, selectedItem }) => {
+const CateSwiper: React.FunctionComponent<Props> = ({
+  cateList,
+  onClick,
+  selectedItem,
+}) => {
   const [nextEl, nextElRef] = useSwiperRef<HTMLButtonElement>();
   const [prevEl, prevElRef] = useSwiperRef<HTMLButtonElement>();
 
   return (
     <SwiperWrapper>
-      <SwiperNavBtn ref={prevElRef as RefObject<HTMLButtonElement>} direction={'left'} />
-      <Swiper slidesPerView={'auto'} navigation={{ prevEl: prevEl as HTMLButtonElement, nextEl: nextEl as HTMLButtonElement }}>
-        {
-          cateList.map(el => (
-            <SwiperSlide key={el.id} onClick={() => onClick(el.id.toString())}>
-              <SwiperText className={+selectedItem === el.id ? 'selected' : ''}>
-                {el.title}
-              </SwiperText>
-            </SwiperSlide>
-          ))
-        }
+      <SwiperNavBtn
+        ref={prevElRef as RefObject<HTMLButtonElement>}
+        direction={'left'}
+      />
+      <Swiper
+        slidesPerView={'auto'}
+        navigation={{
+          prevEl: prevEl as HTMLButtonElement,
+          nextEl: nextEl as HTMLButtonElement,
+        }}
+      >
+        {cateList.map((el) => (
+          <SwiperSlide key={el.id} onClick={() => onClick(el.id.toString())}>
+            <SwiperText className={+selectedItem === el.id ? 'selected' : ''}>
+              {el.title}
+            </SwiperText>
+          </SwiperSlide>
+        ))}
       </Swiper>
-        <SwiperNavBtn ref={nextElRef as RefObject<HTMLButtonElement>} direction={'right'} />
+      <SwiperNavBtn
+        ref={nextElRef as RefObject<HTMLButtonElement>}
+        direction={'right'}
+      />
     </SwiperWrapper>
   );
 };
@@ -79,15 +96,14 @@ const Button = styled.button<SwiperNavBtnType>`
   cursor: pointer;
   color: ${color.basic.white};
   border: 0;
-  margin-${attr => attr.direction === 'right' ? 'left' : 'right'}: 5px;
+  ${(attr) =>
+    attr.direction === 'right' ? 'margin-left' : 'margin-right'}: 5px;
 `;
+
 
 const SwiperText = styled.a`
   cursor: pointer;
-  padding-left: .25rem;
-  padding-right: .25rem;
-  padding-top: 1rem;
-  padding-bottom: .75rem;
+  padding: 1rem .25rem .75rem .25rem;
 
   &.selected {
     border-bottom: 4px solid ${color.pastel.skyBlue};

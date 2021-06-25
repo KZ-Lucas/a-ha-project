@@ -1,12 +1,8 @@
 import styled from 'styled-components';
 
-const ExpertsCardList: React.FunctionComponent = ({ children }) => {
-  return (
-    <ExpertsCardListWrapper>
-      {children}
-    </ExpertsCardListWrapper>
-  )
-};
+const ExpertsCardList: React.FunctionComponent = ({ children }) => (
+  <ExpertsCardListWrapper>{children}</ExpertsCardListWrapper>
+);
 
 export default ExpertsCardList;
 

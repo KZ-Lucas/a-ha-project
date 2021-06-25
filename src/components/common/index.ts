@@ -4,10 +4,4 @@ import MainTitle from '@components/common/MainTitle';
 import Select from '@components/common/Select';
 import ToggleSwitch from '@components/common/ToggleSwitch';
 
-export {
-  CateSwiper,
-  KeywordList,
-  MainTitle,
-  Select,
-  ToggleSwitch
-};
+export { CateSwiper, KeywordList, MainTitle, Select, ToggleSwitch };

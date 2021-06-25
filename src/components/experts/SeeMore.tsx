@@ -2,10 +2,10 @@ import styled from 'styled-components';
 import { color } from '@constants';
 
 type Props = {
+  /** 더보기 클릭 이벤트 핸들러 */
   onClick: () => void;
 };
 
-// TODO: React already defined?
 const SeeMore: React.FunctionComponent<Props> = ({ onClick }) => (
   <SeeMoreWrapper onClick={onClick}>더보기</SeeMoreWrapper>
 );
@@ -21,5 +21,5 @@ const SeeMoreWrapper = styled.div`
   padding: 1.4rem;
   margin-bottom: 1rem;
   cursor: pointer;
-  color: white;
+  color: ${color.basic.white};
 `;

@@ -1,7 +1,7 @@
-import { ArrowIcon, StarIcon, ScheduleIcon } from '@src/components/common/icons/BasicIcon';
-
-export {
+import {
   ArrowIcon,
   StarIcon,
-  ScheduleIcon
-};
+  ScheduleIcon,
+} from '@src/components/common/icons/BasicIcon';
+
+export { ArrowIcon, StarIcon, ScheduleIcon };
