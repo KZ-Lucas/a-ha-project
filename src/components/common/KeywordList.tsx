@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { color } from '@constants';
 
@@ -68,6 +68,8 @@ KeywordList.defaultProps = {
   selectedItem: [],
 };
 
+export default KeywordList;
+
 const KeywordWrapper = styled.div`
   display: inline-flex;
   flex-wrap: wrap;
@@ -106,5 +108,3 @@ const KeywordText = styled.span`
   height: 30px;
   color: ${color.basic.gray};
 `;
-
-export default KeywordList;
