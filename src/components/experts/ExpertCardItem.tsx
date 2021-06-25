@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { KeywordList } from '@components/common';
 import { color } from '@constants';
@@ -78,7 +79,7 @@ const ExpertsCardItem: React.FunctionComponent<Props> = ({
   </ExpertsCardItemWrapper>
 );
 
-export default ExpertsCardItem;
+export default React.memo(ExpertsCardItem);
 
 const ExpertsCardItemWrapper = styled.div`
   display: flex;
