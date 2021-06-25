@@ -221,6 +221,10 @@ const ExpertsFilterWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-top: 2rem;
+  padding-bottom: .75rem;
+  border-width: 0 0 1px 0;
+  border-color: ${constants.color.pastel.darkGray};
+  border-style: solid;
 `;
 const ToggleSwitchWrapper = styled.div``;
 const SortExpertsWrapper = styled.div`
