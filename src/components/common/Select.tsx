@@ -18,7 +18,7 @@ const Select: React.FunctionComponent<Props> = ({
   const selectFilter = (event: { target: HTMLSelectElement }) => onClick(event.target.value);
 
   return (
-    <SelectStyled onChange={selectFilter} defaultValue={defaultValue}>
+    <SelectStyled onChange={selectFilter} value={defaultValue ?? optionList[0].key}>
       {optionList.map((option) => (
         <OptionStyled key={option.key} value={option.key}>
           {option.label}
