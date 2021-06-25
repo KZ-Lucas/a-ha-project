@@ -63,12 +63,12 @@ const ExpertsCardItem: React.FunctionComponent<Props> = ({
             activeKeywords ? JSON.parse(decodeURIComponent(activeKeywords)) : []
           }
           activeStyle={` 
-              border-color: ${color.pastel.skyBlue};
-
-              span {
-                color: ${color.basic.white};
-              }
-            `}
+            border-color: ${color.pastel.skyBlue};
+            span {
+              color: ${color.basic.white};
+            }
+          `}
+          activeFirst
         />
       </KeywordListWrapper>
     </ProfileDescriptionWrapper>

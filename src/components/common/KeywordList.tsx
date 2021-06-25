@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import styled from 'styled-components';
 import { color } from '@constants';
 
@@ -13,14 +14,17 @@ type Props = {
   selectedItem: Array<number>;
   /** 선택 표시된 키워드 스타일 */
   activeStyle?: string;
+  /** 선택 키워드 먼저 표시 여부 */
+  activeFirst?: boolean;
 };
-type KeywordStyle = Partial<Pick<Props, 'activeStyle'>>
+type KeywordStyle = Partial<Pick<Props, 'activeStyle'>>;
 
 const KeywordList: React.FunctionComponent<Props> = ({
   keywords,
   onClick,
   selectedItem,
   activeStyle,
+  activeFirst,
 }) => {
   // 키워드 선택 핸들러
   const selectKeyword = (id: number) => {
@@ -28,15 +32,25 @@ const KeywordList: React.FunctionComponent<Props> = ({
       return;
     }
     if (onClick && selectedItem.includes(id)) {
-      onClick(selectedItem.filter(itemId => itemId !== id));
+      onClick(selectedItem.filter((itemId) => itemId !== id));
     } else {
       onClick(selectedItem.concat(id));
     }
   };
 
+  const renderCollection = useMemo(() => {
+    if (activeFirst) {
+      return keywords
+        .filter(({ id }) => selectedItem.includes(id))
+        .concat(keywords.filter(({ id }) => !selectedItem.includes(id)));
+    } else {
+      return keywords;
+    }
+  }, [activeFirst, keywords, selectedItem]);
+
   return (
     <KeywordWrapper>
-      {keywords.map(el => (
+      {renderCollection.map((el) => (
         <Keyword
           key={el.id}
           className={selectedItem.includes(el.id) ? 'selected' : ''}
@@ -81,14 +95,13 @@ const Keyword = styled.button<KeywordStyle>`
         span {
           color: ${color.pastel.black};
         }
-      `
-    }
+      `}
   }
 `;
 const KeywordText = styled.span`
   display: inline-flex;
   align-items: center;
-  padding: 0 .5rem;
+  padding: 0 0.5rem;
   line-height: 1;
   height: 30px;
   color: ${color.basic.gray};
