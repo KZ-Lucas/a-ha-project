@@ -45,4 +45,7 @@ npm run start
 1. 지금 상담 가능 필터링에 해당하는 페이로드 프로퍼티를 포함한 모든 페이로드 통해 Experts API를 호출해 스토어에 들이붓는 dispatch 작업을 수행합니다. (누적 렌더링 1회)
 2. 변경된 스토어의 Experts 데이터를 통해 렌더링을 처리합니다.
 
+위 안건은 다음 PR을 통해 처리 진행하였습니다.
+https://github.com/KZ-Lucas/a-ha-project/pull/1
+
 감사합니다.
