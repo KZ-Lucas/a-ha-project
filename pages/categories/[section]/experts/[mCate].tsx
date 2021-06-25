@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { CategoryApi } from '@api';
-import { MainTitle, CateSwiper, KeywordList } from '@components/common';
-import { ExpertCardItem, ExpertCardList, ExpertFilter, SeeMore } from '@components/experts';
+import { MainTitle, CateSwiper, KeywordList, ToggleSwitch, Select } from '@components/common';
+import { ExpertCardItem, ExpertCardList, SeeMore } from '@components/experts';
 import { useExperts } from '@hooks';
-import { CommonUtil, DateUtil } from '@util';
+import { DateUtil } from '@util';
 import type { expertsType, routerType } from '@Ptypes';
+import * as constants from '@src/constants';
 
 type Props = {
   categoriesProp: expertsType.getCategoriesResponse,
@@ -15,85 +16,46 @@ type Props = {
 }
 
 // TODO: 데이터 정제해주는 로직만들자.
+// TODO:: 내부 로직 검수(성능? 명)
 // TODO: experts Effect랑 Selector랑 합쳐보자.
 const CallPage: React.FunctionComponent<Props> = ({ categoriesProp, keywordsProp }) => {
   const router = useRouter();
-  const [expertsData, setExpertsData] = useState<expertsType.getExpertsResponse>(); 
-  const { section, mCate, keywords } = router.query;
-  const { payload, changePayload } = useExperts();
-  const {
-    count,
-    page,
-    rootId = section,
-    subId = mCate,
-    leafId = keywords,
-    sortBy,
-    isAvailable,
-  } = payload;
-
+  const { section: rootId, mCate: subId, keywords, isAvailable, sortBy } = router.query;
+  const { experts, fetchExperts, moreExperts } = useExperts();
+  
   const selectCategory = (id: string) => {
-    router.push(`/categories/${section}/experts/${id}`);
-  }
+    router.push(`/categories/${rootId}/experts/${id}`);
+  };
   const selectKeyword = (keywords: Array<number>) => {
     const routerObj: routerType.RouterUrlObj = {
-      pathname: `/categories/${section}/experts/${mCate}`
+      pathname: router.pathname,
+      query: router.query
     };
 
+    delete router.query.keywords;
     if (keywords.length) {
       routerObj.query = {
+        ...router.query,
         keywords: encodeURIComponent(JSON.stringify(keywords))
       };
     }
     router.push(routerObj, undefined, { shallow: true });
   };
+  const switchChange = (toggle: boolean) => {
+    router.push({ pathname: router.pathname, query: { ...router.query, isAvailable: toggle }}, undefined, { shallow: true });
+  };
+  const filterChange = (value: string) => {
+    router.push({ pathname: router.pathname, query: { ...router.query, sortBy: value }}, undefined, { shallow: true });
+  }
+  const seeMore = () => {
+    moreExperts();
+  };
 
-  // 페이지 넘길때는 리렌더링안되도록 하는 방법이 있을까?
+  console.log(2);
+
   useEffect(() => {
-    const handleRouteChange = () => {
-      changePayload(({ page: 1 }))
-    };
-
-    Router.events.on('routeChangeStart', handleRouteChange);
-
-    return () => {
-      Router.events.off('routeChangeStart', handleRouteChange);
-    };
-  }, [changePayload]);
-
-  //TODO: 훅으로 분기
-  useEffect(() => {
-    void async function () {
-      try {
-        const vaildObj = CommonUtil.filterVaildObj({ count, page, sortBy, isAvailable });
-        const payload = {
-          ...vaildObj,
-          ...CommonUtil.ObjPick({ rootId, subId, leafId }, ['leafId', 'subId', 'rootId'])[0]
-        };
-
-        if (payload.leafId) {
-          const leafIdArr = JSON.parse(decodeURIComponent(payload.leafId));
-
-          payload.leafIds = leafIdArr;
-          delete payload.leafId;
-        }
-
-        const res = await CategoryApi.getExperts(payload);
- 
-        if (page > 1) {
-          setExpertsData(
-            (prev: any) => ({
-                ...prev,
-                experts: prev?.experts.concat(res.data.experts)
-            })
-          );
-        } else {
-          setExpertsData(res.data);
-        }
-      } catch (err) {
-        throw Error(err);
-      }
-    }();
-  }, [count, page, rootId, subId, leafId, sortBy, isAvailable]);
+    fetchExperts({});
+  }, [fetchExperts]);
   
   return (
     <Wrapper>
@@ -102,18 +64,26 @@ const CallPage: React.FunctionComponent<Props> = ({ categoriesProp, keywordsProp
           <MainTitle title={categoriesProp.title} />
         </NavMain>
         <NavSub>
-          <CateSwiper cateList={categoriesProp.children} onClick={selectCategory} selectedItem={mCate as string} />
+          <CateSwiper cateList={categoriesProp.children} onClick={selectCategory} selectedItem={subId as string} />
           <KeywordList keywords={keywordsProp.children} onClick={selectKeyword} selectedItem={keywords ? JSON.parse(decodeURIComponent(keywords as string)) : []} />
-          <ExpertFilter />
+          <ExpertsFilterWrapper>
+            <ToggleSwitchWrapper>
+              <FilterLabel>지금 상담 가능</FilterLabel>
+              <ToggleSwitch isToggle={JSON.parse(isAvailable as string ?? false)} onClick={switchChange} />
+            </ToggleSwitchWrapper>
+            <SortExpertsWrapper>
+              <Select optionList={constants.experts.filterItems} onClick={filterChange} defaultValue={sortBy as string} />
+            </SortExpertsWrapper>
+          </ExpertsFilterWrapper>
         </NavSub>
       </Nav>
       <Main>
         {
-          expertsData ?
+          experts ?
             <ExpertCardList>
               {
-                expertsData.experts.length ?
-                  expertsData.experts.map(({ uuid, title, rateAvg, reviewCount, productCount, consultingAreas, profileImages, fastestAvailable }) => (
+                experts.experts.length ?
+                experts.experts.map(({ uuid, title, rateAvg, reviewCount, productCount, consultingAreas, profileImages, fastestAvailable }) => (
                   <ExpertCardItem
                     key={uuid}
                     title={title}
@@ -142,8 +112,8 @@ const CallPage: React.FunctionComponent<Props> = ({ categoriesProp, keywordsProp
                 )) : <></>
               }
               {
-                expertsData.total > expertsData.experts.length ?
-                  <SeeMore onClick={() => changePayload({ page: page + 1 })}/>
+                experts.total > experts.experts.length ?
+                  <SeeMore onClick={seeMore}/>
                 : <></>
               }
             </ExpertCardList> : <></>
@@ -189,4 +159,21 @@ const NavSub = styled.div`
 `;
 const Main = styled.main`
   margin-top: 1.4rem;
+`;
+const ExpertsFilterWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+`;
+
+const ToggleSwitchWrapper = styled.div`
+`;
+
+const SortExpertsWrapper = styled.div`
+  margin-left: 1rem;
+`;
+
+const FilterLabel = styled.span`
+  font-size: .875rem;
+  color: ${constants.color.basic.white};
 `;

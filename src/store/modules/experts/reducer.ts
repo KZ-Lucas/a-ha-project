@@ -1,19 +1,20 @@
 import { createReducer } from 'typesafe-actions';
 import produce from 'immer';
-import { CHANGE_PAYLOAD } from '@store/modules/experts/actions';
+import { EXPERTS_FETCH, EXPERTS_SEEMORE } from '@store/modules/experts/actions';
 import { PayloadState, ExpertsAction } from '@store/modules/experts/types';
-import { defaultCount } from '@constants/experts'
+import { getExpertsResponse } from '@src/types/experts';
 
 // Reducer State
 const initialState: PayloadState = {
-  count: defaultCount,
-  page: 1,
+  experts: [],
+  total: 0
 };
 
 // Reducer
-export const expertsReducer = createReducer<PayloadState, ExpertsAction>(initialState, {
-  [CHANGE_PAYLOAD]: (state, action) =>
+export const expertsReducer = createReducer<getExpertsResponse, ExpertsAction>(initialState, {
+  [EXPERTS_FETCH]: (_, action) => action.payload,
+  [EXPERTS_SEEMORE]: (state, action) =>
     produce(state, draft => {
-      return {...draft, ...action.payload };
+      draft.experts.push(...action.payload.experts);
     })
 });
