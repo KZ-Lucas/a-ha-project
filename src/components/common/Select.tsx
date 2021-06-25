@@ -4,15 +4,17 @@ import { color } from '@constants';
 type Props = {
   optionList: Array<{ key: string; label: string; }>;
   onClick: (value: string) => void;
+  defaultValue: string;
 };
 
-const Select: React.FunctionComponent<Props> = ({ optionList, onClick }) => {
+const Select: React.FunctionComponent<Props> = ({ optionList, onClick, defaultValue }) => {
   const selectFilter = (event: { target: HTMLSelectElement }) => {
     onClick(event.target.value);
   };
+  console.log(defaultValue);
   
   return (
-    <SelectStyled onChange={selectFilter}>
+    <SelectStyled onChange={selectFilter} defaultValue={defaultValue}>
       {
         optionList.map((option) => (
           <OptionStyled key={option.key} value={option.key}>
