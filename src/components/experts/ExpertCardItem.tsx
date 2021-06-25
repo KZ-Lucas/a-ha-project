@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { KeywordList } from '@components/common';
 import { color } from '@constants';
@@ -78,17 +79,20 @@ const ExpertsCardItem: React.FunctionComponent<Props> = ({
   </ExpertsCardItemWrapper>
 );
 
-export default ExpertsCardItem;
+export default React.memo(ExpertsCardItem);
 
 const ExpertsCardItemWrapper = styled.div`
   display: flex;
-  border-width: 1px 0 0 0;
-  border-color: ${color.pastel.darkGray};
-  border-style: solid;
   width: 100%;
   height: auto;
   padding: 1.25rem 0;
   cursor: pointer;
+
+  & + & {
+    border-width: 1px 0 0 0;
+    border-color: ${color.pastel.darkGray};
+    border-style: solid;
+  }
 `;
 const ProfileImageWrapper = styled.div``;
 const ProfileImage = styled.span<ProfileImageType>`
