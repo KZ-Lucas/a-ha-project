@@ -7,6 +7,8 @@ import * as expertsModules from '@store/modules/experts';
 import { defaultCount } from '@constants/experts';
 import { GetExpertPayload } from '@Ptypes/experts';
 
+// 하기 안건 처리를 위해 개발됨
+// https://github.com/KZ-Lucas/a-ha-project/pull/1
 const useExperts = () => {
   const router = useRouter();
   const { rootId, subId, keywords, isAvailable, sortBy } = router.query;
